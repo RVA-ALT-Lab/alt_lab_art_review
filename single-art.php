@@ -21,6 +21,7 @@ $container   = get_theme_mod( 'understrap_container_type' );
 
 					<?php get_template_part( 'loop-templates/content', 'art' ); ?>
 					<?php echo do_shortcode('[gravityform id="1" title="false" description="false"]'); ?>
+					<?php get_reviews(); ?>
 
 						<?php understrap_post_nav(); ?>
 

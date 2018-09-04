@@ -171,3 +171,19 @@ function add_reviewer ($entry, $form){
   $reviewer_id = $reviewer->ID;
   add_post_meta($art_id, 'reviewer_id', $reviewer_id, false );
 }
+
+
+function get_reviews() {
+  $entries = GFAPI::get_entries(1);
+  foreach ($entries as $entry) {
+    if(is_admin()){
+      $email = $entry[1];
+    } else {
+      $email = 'reviewer';
+    }
+    $drawing = $entry[8];
+    $rendering = $entry[10];
+    $design = $entry[9];  
+    echo '<div class="row">' . $email . ' ' . $drawing . ' ' . $design . ' ' . $rendering . '</div>';
+  }
+}
