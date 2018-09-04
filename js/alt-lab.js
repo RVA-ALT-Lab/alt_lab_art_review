@@ -17,3 +17,13 @@ function myFunction() {
     navbar.classList.remove("sticky");
   }
 }
+
+
+var ratings = document.getElementsByTagName('label');
+console.log(ratings[1].tabIndex = 0);
+ratings = Array.from(ratings);
+
+ratings.forEach(function(element) {
+  element.tabIndex = 0;
+  element.setAttribute('role', 'radio');
+});

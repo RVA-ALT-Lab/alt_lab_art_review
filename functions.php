@@ -173,17 +173,38 @@ function add_reviewer ($entry, $form){
 }
 
 
-function get_reviews() {
-  $entries = GFAPI::get_entries(1);
-  foreach ($entries as $entry) {
-    if(is_admin()){
-      $email = $entry[1];
-    } else {
-      $email = 'reviewer';
+function get_reviews($id) {
+  $search_criteria = array(
+    'status'        => 'active',
+    'field_filters' => array(
+        'mode' => 'any',       
+        array(
+            'key'   => '6',
+            'value' => $id
+        )
+    )
+);
+
+  $sorting         = array();
+  $paging          = array( 'offset' => 0, 'page_size' => 25 );
+  $total_count     = 0;
+
+  $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
+  $html = '';
+  $html .= '<h2>Reviews</h2>';
+    foreach ($entries as $entry) {
+      $html .= '<div class="row">';
+      if(current_user_can('editor') || current_user_can('administrator')){
+        $email = $entry[1];
+        $html .= '<div class="col-4">' . $email . '</div>';
+      } 
+      $drawing = $entry[8];
+      $rendering = $entry[10];
+      $design = $entry[9]; 
+      $art_id =  $entry[6]; 
+    
+      $html .= '<div class="col-1">' . $drawing . '</div><div class="col-1">' . $design . '</div><div class="col-1">' . $rendering . '</div></div>';      
     }
-    $drawing = $entry[8];
-    $rendering = $entry[10];
-    $design = $entry[9];  
-    echo '<div class="row">' . $email . ' ' . $drawing . ' ' . $design . ' ' . $rendering . '</div>';
-  }
+    echo $html;
+  
 }
