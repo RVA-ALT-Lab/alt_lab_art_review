@@ -35,6 +35,7 @@ ratings.forEach(function(element) {
 function averageRatings(category){
 	var total = 0;
 	var count = 0;
+	var avg = 0;
 	var dataDivs = document.getElementsByClassName(category+'-data');
 	dataDivs = Array.from(dataDivs);
 	dataDivs.forEach(function(div){		
@@ -42,8 +43,12 @@ function averageRatings(category){
 		console.log(total);
 		count++;
 		console.log(count);
-		var avg = total/count;
+		avg = total/count;		
 	})
+	var destination = document.getElementById(category+'-avg');
+	destination.innerHTML = avg;
 }
 
 averageRatings('drawing');
+averageRatings('design');
+averageRatings('rendering');
