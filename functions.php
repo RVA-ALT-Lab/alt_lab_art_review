@@ -82,7 +82,7 @@ require get_template_directory() . '/inc/custom-post-types.php';
 add_action('wp_enqueue_scripts', 'alt_lab_scripts');
 function alt_lab_scripts() {
 	$query_args = array(
-		'family' => 'Roboto:300,400,700|Old+Standard+TT:400,700|Oswald:400,500,700',
+		'family' => 'IBM+Plex+Sans:100,400,700',
 		'subset' => 'latin,latin-ext',
 	);
 	wp_enqueue_style ( 'google_fonts', add_query_arg( $query_args, "//fonts.googleapis.com/css" ), array(), null );
@@ -207,4 +207,27 @@ function get_reviews($id) {
     }
     echo $html;
   
+}
+
+
+//Featured image
+function art_img_update() {
+    global $content_width;
+
+    if ( isset( $content_width ) )
+    {
+        $content_width = 1300;//this thing is needed but super weird
+    }
+
+    if ( function_exists( 'add_image_size' ) ) {
+      add_image_size( 'grande', 1255); 
+    }
+}
+add_action( 'after_setup_theme', 'art_img_update', 11 );
+
+ 
+function art_review_custom_sizes( $sizes ) {
+    return array_merge( $sizes, array(
+        'very-grande' => __('Grande'),       
+    ) );
 }
