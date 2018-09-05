@@ -20,8 +20,17 @@ $container   = get_theme_mod( 'understrap_container_type' );
 				<?php while ( have_posts() ) : the_post(); ?>
 
 					<?php get_template_part( 'loop-templates/content', 'art' ); ?>
-					<?php echo do_shortcode('[gravityform id="1" title="false" description="false"]'); ?>
-					<?php get_reviews($post->ID); ?>
+					<?php 
+					$reviewers = get_post_meta($post->ID, 'reviewer_id', false);
+					$current_user = wp_get_current_user();
+					$user_id = $current_user->ID;
+					if (!in_array($user_id ,$reviewers)){
+							echo do_shortcode('[gravityform id="1" title="false" description="false"]'); 
+						}
+						else {
+							get_reviews_chart($post->ID); 
+						}
+					;?>
 
 						<?php understrap_post_nav(); ?>
 

@@ -172,8 +172,50 @@ function add_reviewer ($entry, $form){
   add_post_meta($art_id, 'reviewer_id', $reviewer_id, false );
 }
 
-
+//OLD WAY TO DO THIS WITH NUMBERS
 function get_reviews($id) {
+  $search_criteria = array(
+    'status'        => 'active',
+    'field_filters' => array(
+        'mode' => 'any',       
+        array(
+            'key'   => '6',
+            'value' => $id
+        )
+    )
+);
+
+  $sorting         = array();
+  $paging          = array( 'offset' => 0, 'page_size' => 35 );
+  $total_count     = 0;
+
+  $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
+  //var_dump($entries);
+  $html = '';
+  $html .= '<h2>Reviews</h2>';
+      $html .= '<div class="review-table"><div class="row"><div class="col-4 reviewer-label"></div><div class="col-1 stat-label">drawing</div><div class="col-1 stat-label">design</div><div class="col-1 stat-label">rendering</div></div>';
+    foreach ($entries as $entry) {
+      $html .= '<div class="row review-row">';
+      if(current_user_can('editor') || current_user_can('administrator')){
+        $email = $entry[1];       
+      } else {
+        $email = $entry["date_created"];
+      }
+      $drawing = $entry[8];
+      $rendering = $entry[10];
+      $design = $entry[9]; 
+      $art_id =  $entry[6]; 
+    
+      $html .= '<div class="col-4">' . $email . '</div><div class="col-1 drawing-data">' . $drawing . '</div><div class="col-1 design-data">' . $design . '</div><div class="col-1 rendering-data">' . $rendering . '</div></div>';      
+    }
+    $html .= '<div class="row average"><div class="col-4">Average</div><div class="col-1" id="drawing-avg"></div><div class="col-1" id="design-avg"></div><div class="col-1" id="rendering-avg"></div></div></div>';
+    echo $html;
+  
+}
+
+//BUILD CHART VIEW
+
+function get_reviews_chart($id) {
   $search_criteria = array(
     'status'        => 'active',
     'field_filters' => array(
@@ -193,7 +235,7 @@ function get_reviews($id) {
   //var_dump($entries);
   $html = '';
   $html .= '<h2>Reviews</h2>';
-      $html .= '<div class="row"><div class="col-4 reviewer-label"></div><div class="col-1 stat-label">drawing</div><div class="col-1 stat-label">design</div><div class="col-1 stat-label">rendering</div></div>';
+      $html .= '<div class="review-table"><div class="row"><div class="col-3 reviewer-label"></div><div class="col-3 stat-label">drawing</div><div class="col-3 stat-label">design</div><div class="col-3 stat-label">rendering</div></div>';
     foreach ($entries as $entry) {
       $html .= '<div class="row review-row">';
       if(current_user_can('editor') || current_user_can('administrator')){
@@ -206,12 +248,28 @@ function get_reviews($id) {
       $design = $entry[9]; 
       $art_id =  $entry[6]; 
     
-      $html .= '<div class="col-4">' . $email . '</div><div class="col-1 drawing-data">' . $drawing . '</div><div class="col-1 design-data">' . $design . '</div><div class="col-1 rendering-data">' . $rendering . '</div></div>';      
+      $html .= '<div class="col-3">' . $email  . '</div><div class="col-3 drawing-data">' . buildBoxes($drawing) . '</div><div class="col-3 design-data">' . buildBoxes($design) . '</div><div class="col-3 rendering-data">' . buildBoxes($rendering) . '</div></div>';      
     }
-    $html .= '<div class="row average"><div class="col-4">Average</div><div class="col-1" id="drawing-avg"></div><div class="col-1" id="design-avg"></div><div class="col-1" id="rendering-avg"></div></div>';
+    $html .= '<div class="row average"><div class="col-3">Average</div><div class="col-3" id="drawing-avg"></div><div class="col-3" id="design-avg"></div><div class="col-3" id="rendering-avg"></div></div></div>';
     echo $html;
   
 }
+
+function buildBoxes($number){
+  if($number == 1){
+    return '<div class="art-data-box full"></div><div class="art-data-box"></div><div class="art-data-box"></div><div class="art-data-box"></div>';
+  }
+  if ($number == 2){
+    return '<div class="art-data-box full"></div><div class="art-data-box full"></div><div class="art-data-box"></div><div class="art-data-box"></div>';
+  }
+  if ($number == 3){
+    return '<div class="art-data-box full"></div><div class="art-data-box full"></div><div class="art-data-box full"></div><div class="art-data-box"></div>';
+  }
+  if ($number == 4){
+    return '<div class="art-data-box full"></div><div class="art-data-box full"></div><div class="art-data-box full"></div><div class="art-data-box full"></div>';
+  }
+}
+
 
 
 //Featured image
@@ -224,7 +282,7 @@ function art_img_update() {
     }
 
     if ( function_exists( 'add_image_size' ) ) {
-      add_image_size( 'grande', 1255); 
+      add_image_size( 'grande', 1140); 
     }
 }
 add_action( 'after_setup_theme', 'art_img_update', 11 );

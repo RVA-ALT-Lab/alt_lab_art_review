@@ -295,13 +295,23 @@ ul.gfield_radio li label:hover {
     font-weight: 400;
 }
 
-.stat-label {
-  transform: rotate(-40deg);
-  margin-bottom: 20px;
-  margin-left: -5px;
-}
+
 
 .review-row {
   border-bottom: 1px $light-gray solid;
   margin-bottom: 3px;
+}
+
+
+
+.art-data-box {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #424242;
+  display:inline-block;
+  margin-right: 3px;
+}
+
+.full {
+  background-color: #b7b3b3;
 }
