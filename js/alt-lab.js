@@ -26,4 +26,24 @@ ratings = Array.from(ratings);
 ratings.forEach(function(element) {
   element.tabIndex = 0;
   element.setAttribute('role', 'radio');
+  element.setAttribute('aria-label', 'radio')
 });
+
+
+//rating averages 
+
+function averageRatings(category){
+	var total = 0;
+	var count = 0;
+	var dataDivs = document.getElementsByClassName(category+'-data');
+	dataDivs = Array.from(dataDivs);
+	dataDivs.forEach(function(div){		
+		total = parseInt(div.innerHTML) + total;
+		console.log(total);
+		count++;
+		console.log(count);
+		var avg = total/count;
+	})
+}
+
+averageRatings('drawing');

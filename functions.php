@@ -190,21 +190,25 @@ function get_reviews($id) {
   $total_count     = 0;
 
   $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
+  //var_dump($entries);
   $html = '';
   $html .= '<h2>Reviews</h2>';
+      $html .= '<div class="row"><div class="col-4 reviewer-label"></div><div class="col-1 stat-label">drawing</div><div class="col-1 stat-label">design</div><div class="col-1 stat-label">rendering</div></div>';
     foreach ($entries as $entry) {
-      $html .= '<div class="row">';
+      $html .= '<div class="row review-row">';
       if(current_user_can('editor') || current_user_can('administrator')){
-        $email = $entry[1];
-        $html .= '<div class="col-4">' . $email . '</div>';
-      } 
+        $email = $entry[1];       
+      } else {
+        $email = $entry["date_created"];
+      }
       $drawing = $entry[8];
       $rendering = $entry[10];
       $design = $entry[9]; 
       $art_id =  $entry[6]; 
     
-      $html .= '<div class="col-1">' . $drawing . '</div><div class="col-1">' . $design . '</div><div class="col-1">' . $rendering . '</div></div>';      
+      $html .= '<div class="col-4">' . $email . '</div><div class="col-1 drawing-data">' . $drawing . '</div><div class="col-1 design-data">' . $design . '</div><div class="col-1 rendering-data">' . $rendering . '</div></div>';      
     }
+    $html .= '<div class="row average"><div class="col-4">Average</div><div class="col-1" id="drawing-avg"></div><div class="col-1" id="design-avg"></div><div class="col-1" id="rendering-avg"></div></div>';
     echo $html;
   
 }
@@ -214,7 +218,7 @@ function get_reviews($id) {
 function art_img_update() {
     global $content_width;
 
-    if ( isset( $content_width ) )
+    if ( isset( $content_width ) )  
     {
         $content_width = 1300;//this thing is needed but super weird
     }
