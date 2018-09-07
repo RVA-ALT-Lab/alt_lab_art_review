@@ -237,7 +237,9 @@ blockquote.default{
   margin: 5px;
   text-align: center;
   position: relative;
+  border-radius: 50%;
 }
+
 
 #gform_wrapper_1 ul.gfield_radio li label {
   display: block;
@@ -265,6 +267,15 @@ ul.gfield_radio li label:hover {
 
 #gform_wrapper_1 ul.gfield_checkbox li input[type=checkbox]:checked+label, #gform_wrapper_1 ul.gfield_radio li input[type=radio]:checked+label{
   background-color: $aqua;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+}
+
+#gform_wrapper_1 .chosen-child {
+  background-color: $aqua !important;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -301,7 +312,6 @@ ul.gfield_radio li label:hover {
   border-bottom: 1px $light-gray solid;
   margin-bottom: 3px;
 }
-
 
 
 .art-data-box {
