@@ -25,13 +25,18 @@ $container   = get_theme_mod( 'understrap_container_type' );
 					$current_user = wp_get_current_user();
 					$user_id = $current_user->ID;
 					if (!in_array($user_id ,$reviewers)){
+							echo '<div class="col-md-9 reviews"><h2>Review It</h2><div class="review-land">';
 							echo do_shortcode('[gravityform id="1" title="false" description="false"]'); 
+							echo '</div></div>';
 						}
 						else {
 							get_reviews_chart($post->ID); 
 						}
 					;?>
-
+						<?php 
+						buildRatingNavigation(); //TESTING
+						var_dump(get_post_meta($post->ID, 'reviewer_id'));
+						?>
 						<?php understrap_post_nav(); ?>
 
 					<?php

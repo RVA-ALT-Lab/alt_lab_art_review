@@ -82,7 +82,7 @@ require get_template_directory() . '/inc/custom-post-types.php';
 add_action('wp_enqueue_scripts', 'alt_lab_scripts');
 function alt_lab_scripts() {
 	$query_args = array(
-		'family' => 'IBM+Plex+Sans:100,400,700',
+		'family' => 'IBM+Plex+Sans:100,400,700|Oswald+Light:100,400',
 		'subset' => 'latin,latin-ext',
 	);
 	wp_enqueue_style ( 'google_fonts', add_query_arg( $query_args, "//fonts.googleapis.com/css" ), array(), null );
@@ -144,7 +144,7 @@ if ( function_exists('register_sidebar') )
 
 //gravity forms - increment review count as custom field 
 add_action( 'gform_after_submission_1', 'add_review_count', 10, 2 );
-add_action( 'gform_after_submission_1', 'add_reviewer', 10, 2 );
+add_action( 'gform_after_submission_1', 'increment_reviewers', 10, 2 );
 
 function add_review_count($entry, $form){
   $art_id = rgar($entry, '6');
@@ -162,6 +162,22 @@ function increment_review_count ($id){
   }
 }
 
+function increment_reviewers ($entry, $form){
+  $art_id = rgar($entry, '6');
+  $email = rgar($entry, '7');
+  $reviewer = get_user_by( 'email', $email);
+  $reviewer_id = $reviewer->ID;
+
+  $reviewer = get_post_meta($art_id, 'reviewer_id', true);
+  if (! $reviewer) {
+    $reviewer = $reviewer_id;
+    update_post_meta($art_id, 'reviewer_id', $count );
+  } else {
+    $reviewer = $reviewer . ',' . $reviewer_id;
+    update_post_meta($art_id, 'reviewer_id', $reviewer );
+  }
+}
+
 
 //adds reviewer ID to custom field 
 function add_reviewer ($entry, $form){
@@ -169,8 +185,10 @@ function add_reviewer ($entry, $form){
   $email = rgar($entry, '7');
   $reviewer = get_user_by( 'email', $email);
   $reviewer_id = $reviewer->ID;
-  add_post_meta($art_id, 'reviewer_id', $reviewer_id, false );
+  update_post_meta($art_id, 'reviewer_id', $reviewer_id, false );
 }
+
+
 
 //OLD WAY TO DO THIS WITH NUMBERS
 function get_reviews($id) {
@@ -292,4 +310,39 @@ function art_review_custom_sizes( $sizes ) {
     return array_merge( $sizes, array(
         'very-grande' => __('Grande'),       
     ) );
+}
+
+function buildRatingNavigation(){
+  $current_user = wp_get_current_user();
+  $current_user_id = $current_user->ID;
+  $args = array(
+    'post_type' => 'art',
+    'post_status' => 'publish',
+    'meta_query' => array(
+      'relation' => 'OR',
+      array(
+          'key' => 'reviewer_id',
+          'value' => 1,  
+          'compare' => 'NOT IN',
+      ),
+      array(
+      'key' => 'reviewer_id',
+          'compare' => 'NOT EXISTS',
+      ),
+      'orderby' => array( 
+        'review_count' => 'ASC',
+    ),
+  ),
+  );
+
+  $the_query = new WP_Query( $args );
+  if ( $the_query->have_posts() ) :
+    while ( $the_query->have_posts() ) : $the_query->the_post();
+      // Do Stuff
+      var_dump(get_the_title());
+    endwhile;
+    endif;
+
+    // Reset Post Data
+    wp_reset_postdata();
 }

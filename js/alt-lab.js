@@ -65,8 +65,12 @@ jQuery(document).ready(function(){
 function setRadioChildren(num, id){
 	var idStem = id.substring(6, id.length -1);
 	var labelStem = 'label'+idStem;
-	for (i = 1; i < num; i++) {
-		var target = document.getElementById(labelStem+(num-i-1));
-		target.classList.add("chosen-child");
+	for (i = 0; i < 4; i++) {
+		var target = document.getElementById(labelStem+(i));
+		if (i < num) {
+			target.classList.add("chosen-child");
+		} else {
+			target.classList.remove("chosen-child");
+		}
 	}
 }

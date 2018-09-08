@@ -283,11 +283,23 @@ ul.gfield_radio li label:hover {
   max-width: 100%;
 }
 
+#gform_wrapper_1 #field_1_8 .chosen-child {
+    background-color: red !important;
+}
+
+#gform_wrapper_1 #field_1_9 .chosen-child {
+    background-color: blue !important;
+}
+
+#gform_wrapper_1 #field_1_10 .chosen-child {
+    background-color: orange !important;
+}
+
 #gform_wrapper_1 .ginput_container_radio {
   margin-top: 0;
   margin-bottom: 30px;
 }
-
+  
 #gform_wrapper_1 ul.gform_fields li.gfield {
   display: inline-block;
 }
@@ -298,14 +310,23 @@ ul.gfield_radio li label:hover {
   flex-wrap: wrap;
 }
 
-#gform_wrapper_1 label.gfield_label{
-  font-family: 'IBM Plex Sans',sans-serif;
-    padding: 0;
-    margin-bottom: .5rem;
-    font-size: 1.5rem;
-    font-weight: 400;
+
+.reviews h2 {
+  font-family: Oswald-Light;
+  font-size: 36px;
+  color: #000000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 30px;
 }
 
+#gform_wrapper_1 legend, #gform_wrapper_1 label.gfield_label {
+  font-family: Oswald-Light;
+  font-size: 24px;
+  color: #000000;
+  letter-spacing: 1.33px;
+  font-weight: 400;
+}
 
 
 .review-row {
@@ -324,4 +345,48 @@ ul.gfield_radio li label:hover {
 
 .full {
   background-color: #b7b3b3;
+}
+
+.reviews {
+   margin-right: auto;
+  margin-left: auto;
+}
+
+.review-land {
+  padding: 30px;
+  background-color: #F8F7F6;
+  border: $dark-gray 1px solid;
+  position: relative;
+}
+
+.review-land #gform_wrapper_1 .gform_footer {
+  position: absolute;
+  bottom: 50px;
+  right: 0;
+  width: 200px;
+}
+
+#input_1_5 {
+  resize: both;
+}
+
+#gform_submit_button_1 {
+  background: #676767;
+  border-radius: 8px;
+  width: 140px;
+  height: 60px;
+  text-transform: uppercase;
+  font-family: Oswald-Light;
+  font-size: 36px;
+  color: #FFFFFF;
+  letter-spacing: 2px;
+  text-align: center;
+  font-weight: 100;
+}
+
+//img
+#secondary img, article img, figure, img, img.wp-post-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
