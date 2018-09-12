@@ -168,13 +168,11 @@ function increment_reviewers ($entry, $form){
   $reviewer = get_user_by( 'email', $email);
   $reviewer_id = $reviewer->ID;
 
-  $reviewer = get_post_meta($art_id, 'reviewer_id', true);
   if (! $reviewer) {
     $reviewer = $reviewer_id;
-    update_post_meta($art_id, 'reviewer_id', $count );
+    wp_set_post_tags( $art_id, 'reviewer-'. $reviewer_id, true ); 
   } else {
-    $reviewer = $reviewer . ',' . $reviewer_id;
-    update_post_meta($art_id, 'reviewer_id', $reviewer );
+    wp_set_post_tags( $art_id, 'reviewer-'. $reviewer_id, true ); 
   }
 }
 
@@ -314,25 +312,19 @@ function art_review_custom_sizes( $sizes ) {
 
 function buildRatingNavigation(){
   $current_user = wp_get_current_user();
-  $current_user_id = $current_user->ID;
+  $current_user_id = 'reviewer-'.$current_user->ID;
+
   $args = array(
     'post_type' => 'art',
     'post_status' => 'publish',
+    'tag__not_in' => $current_user_id,
+    'posts_per_page' => 10,
+    'order'      => 'DESC',
     'meta_query' => array(
-      'relation' => 'OR',
       array(
-          'key' => 'reviewer_id',
-          'value' => 1,  
-          'compare' => 'NOT IN',
+        'key'     => 'review_count',
       ),
-      array(
-      'key' => 'reviewer_id',
-          'compare' => 'NOT EXISTS',
-      ),
-      'orderby' => array( 
-        'review_count' => 'ASC',
     ),
-  ),
   );
 
   $the_query = new WP_Query( $args );
