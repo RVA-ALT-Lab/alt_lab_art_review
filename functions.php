@@ -311,13 +311,15 @@ function art_review_custom_sizes( $sizes ) {
 }
 
 function buildRatingNavigation(){
+  global $post;
   $current_user = wp_get_current_user();
-  $current_user_id = 'reviewer-'.$current_user->ID;
-
+  $current_user_tag = 'reviewer-'.$current_user->ID;
+  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
   $args = array(
     'post_type' => 'art',
     'post_status' => 'publish',
-    'tag__not_in' => $current_user_id,
+    'tag__not_in' => array($current_user_tag_id->term_id),
+    'post__not_in' => array($post->ID),
     'posts_per_page' => 10,
     'order'      => 'DESC',
     'meta_query' => array(
@@ -331,7 +333,7 @@ function buildRatingNavigation(){
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();
       // Do Stuff
-      var_dump(get_the_title());
+      echo '<div="karma-nav"><a href="' . get_the_permalink() . '">next</a></div>';
     endwhile;
     endif;
 
