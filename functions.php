@@ -337,8 +337,12 @@ function buildRatingNavigation(){
      $posts_remain =  $the_query->found_posts;
      $all_posts = karma_progress();
      $posts_complete = $all_posts - $posts_remain;
-      echo $posts_remain . '/' . $all_posts;
-      echo '<div="karma-nav"><a href="' . get_the_permalink() . '">next</a></div>';
+     if ($posts_remain >0){
+        echo '<div class="">achieve karma perfection by reviewing ' . $posts_remain . ' more</div>';
+      } else {
+        echo '<div class="">karma perfection achieved</div>';
+      }
+      echo '<div="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
       echo '<div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
          if ($posts_complete > $i ){
@@ -346,7 +350,7 @@ function buildRatingNavigation(){
          } else {
           $complete = '';
          }
-         echo  '<div class="karma-unit ' . $complete . '">' . $i . '</div>';
+         echo  '<div class="karma-unit ' . $complete . '">&nbsp;</div>';
         }
       echo '</div>';
     endwhile;

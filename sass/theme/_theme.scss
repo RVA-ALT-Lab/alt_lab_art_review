@@ -398,11 +398,11 @@ ul.gfield_radio li label:hover {
   align-items: stretch;
   flex-wrap: nowrap;
   height: 100%;
+  border: 1px solid $light-gray;
 }
 
 .karma-unit {
  flex-grow: 1;
-  border: 1px solid $light-gray;
 }
 
 .karma-unit.complete {
