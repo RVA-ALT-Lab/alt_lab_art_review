@@ -381,3 +381,90 @@ function karma_progress(){
     wp_reset_postdata();
 
 }
+
+
+function artist_display(){
+  global $post;
+  $current_user = wp_get_current_user();
+ 
+  $args = array(
+    'post_type' => 'art',
+    'post_status' => 'publish',
+    'posts_per_page' => -1,   
+     'author' => $current_user->ID
+  );
+
+  $the_query = new WP_Query( $args );
+  if ( $the_query->have_posts() ) :
+    while ( $the_query->have_posts() ) : $the_query->the_post();
+      // Do Stuff
+        the_post_thumbnail( 'grande' );
+        echo '<h2>' . the_title() . '</h2>';
+       jason_reviews_chart($post->ID);
+      endwhile;
+    endif;
+
+    // Reset Post Data
+    wp_reset_postdata();
+}
+
+
+function jason_reviews_chart($id) {
+  $search_criteria = array(
+    'status'        => 'active',
+    'field_filters' => array(
+        'mode' => 'any',       
+        array(
+            'key'   => '6',
+            'value' => $id
+        )
+    )
+);
+
+  $sorting         = array();
+  $paging          = array( 'offset' => 0, 'page_size' => 25 );
+  $total_count     = 0;
+  $all_drawing = [];
+  $all_design = [];
+  $all_rendering = [];
+  $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
+  //var_dump($entries);
+  $html = '';
+      $html .= '<div class="jason-review-table">';
+    foreach ($entries as $entry) {
+      if(current_user_can('editor') || current_user_can('administrator')){
+        $email = $entry[1];       
+      } else {
+        $email = $entry["date_created"];
+      }
+      $all_drawing[] = $entry[8];
+      $all_rendering[] = $entry[10];
+      $all_design[] = $entry[9]; 
+      $art_id =  $entry[6]; 
+           
+    }
+    $html .= '<div class="row average"><div class="col-3">Average</div><div class="col-3" id="drawing-avg">' . average_ratings($all_drawing) . '</div><div class="col-3" id="design-avg">'. average_ratings($all_design) .'</div><div class="col-3" id="rendering-avg">'. average_ratings($all_rendering) .'</div></div></div>';
+    echo bar_chart_maker('drawing', average_ratings($all_drawing));
+    echo $html;
+    
+}
+
+
+function average_ratings($a){
+  if (count($a)>0){
+  $average = array_sum($a)/count($a);
+  return $average;
+  } else {
+    return 'no ratings';
+  }
+}
+
+
+function bar_chart_maker($title, $avg){
+  $percent = ((round($avg))/4)*100;
+  $html = '<dl><dt>' . $title . ' ' . $avg . '</dt>';  
+  $html .= '<dd class="percentage percentage-' . $percent . '">';
+  $html .=  '<span class="text">';
+  $html .=  $percent .'</span></dd></dl>';
+  return $html;
+}
