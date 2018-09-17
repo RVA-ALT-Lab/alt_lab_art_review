@@ -320,7 +320,7 @@ function buildRatingNavigation(){
     'post_status' => 'publish',
     'tag__not_in' => array($current_user_tag_id->term_id),
     'post__not_in' => array($post->ID),
-    'posts_per_page' => 10,
+    'posts_per_page' => 1,
     'order'      => 'DESC',
     'meta_query' => array(
       array(
@@ -333,10 +333,47 @@ function buildRatingNavigation(){
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();
       // Do Stuff
+
+     $posts_remain =  $the_query->found_posts;
+     $all_posts = karma_progress();
+     $posts_complete = $all_posts - $posts_remain;
+      echo $posts_remain . '/' . $all_posts;
       echo '<div="karma-nav"><a href="' . get_the_permalink() . '">next</a></div>';
+      echo '<div class="karma-box">';
+        for ($i = 0; $i < $all_posts; $i++){
+         if ($posts_complete > $i ){
+          $complete = 'complete';
+         } else {
+          $complete = '';
+         }
+         echo  '<div class="karma-unit ' . $complete . '">' . $i . '</div>';
+        }
+      echo '</div>';
     endwhile;
     endif;
 
     // Reset Post Data
     wp_reset_postdata();
+}
+
+
+function karma_progress(){
+  $args = array(
+    'post_type' => 'art',
+    'post_status' => 'publish',
+    'posts_per_page' => 1,   
+  );
+
+  $all_query = new WP_Query( $args );
+  if ( $all_query->have_posts() ) :
+     while ( $all_query->have_posts() ) : $all_query->the_post();
+      // Do Stuff
+      return $all_query->found_posts;
+   
+     endwhile;
+  endif;
+
+    // Reset Post Data
+    wp_reset_postdata();
+
 }

@@ -31,12 +31,12 @@ $container   = get_theme_mod( 'understrap_container_type' );
 							echo '</div></div>';
 						}
 						else {
-							get_reviews_chart($post->ID); 
+
+							buildRatingNavigation(); //NEXT NAV	
+							get_reviews_chart($post->ID); //RETURN RATINGS DATA
 						}
 					;?>
-						<?php 
-						buildRatingNavigation(); //TESTING
-						?>
+						
 						<?php understrap_post_nav(); ?>
 
 					<?php

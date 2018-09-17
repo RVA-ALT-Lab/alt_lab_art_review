@@ -390,3 +390,21 @@ ul.gfield_radio li label:hover {
   margin-left: auto;
   margin-right: auto;
 }
+
+//karma nav
+
+.karma-box {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: 100%;
+}
+
+.karma-unit {
+ flex-grow: 1;
+  border: 1px solid $light-gray;
+}
+
+.karma-unit.complete {
+  background-color: $light-gray;
+}
