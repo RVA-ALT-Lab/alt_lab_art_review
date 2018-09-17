@@ -445,6 +445,8 @@ function jason_reviews_chart($id) {
     }
     $html .= '<div class="row average"><div class="col-3">Average</div><div class="col-3" id="drawing-avg">' . average_ratings($all_drawing) . '</div><div class="col-3" id="design-avg">'. average_ratings($all_design) .'</div><div class="col-3" id="rendering-avg">'. average_ratings($all_rendering) .'</div></div></div>';
     echo bar_chart_maker('drawing', average_ratings($all_drawing));
+    echo bar_chart_maker('design', average_ratings($all_design));
+    echo bar_chart_maker('rendering', average_ratings($all_rendering));
     echo $html;
     
 }
@@ -453,7 +455,7 @@ function jason_reviews_chart($id) {
 function average_ratings($a){
   if (count($a)>0){
   $average = array_sum($a)/count($a);
-  return $average;
+  return round($average,1);
   } else {
     return 'no ratings';
   }
@@ -461,10 +463,12 @@ function average_ratings($a){
 
 
 function bar_chart_maker($title, $avg){
+  if($avg > 0){
   $percent = ((round($avg))/4)*100;
-  $html = '<dl><dt>' . $title . ' ' . $avg . '</dt>';  
-  $html .= '<dd class="percentage percentage-' . $percent . '">';
-  $html .=  '<span class="text">';
-  $html .=  $percent .'</span></dd></dl>';
+  $html = '<dl><dt>' . $title . ': ' . $avg . '</dt>';  
+  $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd></dl>';
   return $html;
+  } else {
+
+  }
 }
