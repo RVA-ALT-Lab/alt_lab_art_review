@@ -398,9 +398,11 @@ function artist_display(){
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();
       // Do Stuff
-        the_post_thumbnail( 'grande' );
-        echo '<h2>' . the_title() . '</h2>';
-       jason_reviews_chart($post->ID);
+        echo '<div class="row single-art"><div class="col-md-12"><h2>' . get_the_title() . '</h2></div><div class="col-md-5">';       
+        the_post_thumbnail( 'large',['class' => 'img-responsive responsive--full', 'title' => 'Feature image']);
+        echo '</div><div class="col-md-7">';
+         jason_reviews_chart($post->ID);
+         echo '</div></div>';
       endwhile;
     endif;
 
@@ -414,41 +416,46 @@ function jason_reviews_chart($id) {
     'status'        => 'active',
     'field_filters' => array(
         'mode' => 'any',       
-        array(
-            'key'   => '6',
-            'value' => $id
-        )
+        // array(
+        //     'key'   => '6',
+        //     'value' => $id
+        // )
     )
 );
 
   $sorting         = array();
-  $paging          = array( 'offset' => 0, 'page_size' => 25 );
+  $paging          = array( 'offset' => 0, 'page_size' => 400 );
   $total_count     = 0;
   $all_drawing = [];
   $all_design = [];
   $all_rendering = [];
+  $individual_drawing = [];
+  $individual_design = [];
+  $individual_rendering = [];
+  $individual_comments = '';
   $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
-  //var_dump($entries);
-  $html = '';
-      $html .= '<div class="jason-review-table">';
-    foreach ($entries as $entry) {
-      if(current_user_can('editor') || current_user_can('administrator')){
-        $email = $entry[1];       
-      } else {
-        $email = $entry["date_created"];
-      }
+    foreach ($entries as $entry) {     
       $all_drawing[] = $entry[8];
       $all_rendering[] = $entry[10];
       $all_design[] = $entry[9]; 
       $art_id =  $entry[6]; 
+      if ($art_id == $id){
+      $individual_drawing[] = $entry[8];
+      $individual_rendering[] = $entry[10];
+      $individual_design[] = $entry[9]; 
+        if ($entry[5]){
+          $individual_comments .= '<div class="class-note">' . $entry[5] . '</div>';
+        }
+      }
            
     }
-    $html .= '<div class="row average"><div class="col-3">Average</div><div class="col-3" id="drawing-avg">' . average_ratings($all_drawing) . '</div><div class="col-3" id="design-avg">'. average_ratings($all_design) .'</div><div class="col-3" id="rendering-avg">'. average_ratings($all_rendering) .'</div></div></div>';
-    echo bar_chart_maker('drawing', average_ratings($all_drawing));
-    echo bar_chart_maker('design', average_ratings($all_design));
-    echo bar_chart_maker('rendering', average_ratings($all_rendering));
-    echo $html;
-    
+    echo bar_chart_maker('design', average_ratings($individual_design));
+    echo bar_chart_maker('drawing', average_ratings($individual_drawing));
+    echo bar_chart_maker('rendering', average_ratings($individual_rendering));
+    if ($individual_comments){
+      echo '<div class="class-notes"><h2>Notes from the class:</h2>' . $individual_comments . '</div>';
+    }
+      
 }
 
 
@@ -466,9 +473,8 @@ function bar_chart_maker($title, $avg){
   if($avg > 0){
   $percent = round(((round($avg,1))/4)*100);
   $html = '<dl><dt>' . $title . ': ' . $avg . '</dt>';  
-  $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd></dl>';
+  $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd><dd class="percentage total-avg percentage-20"></dd></dl>';
   return $html;
   } else {
-
   }
 }

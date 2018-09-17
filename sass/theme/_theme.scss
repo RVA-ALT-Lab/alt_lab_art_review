@@ -446,7 +446,7 @@ dt {
     background-color: #77d6fa;
     width: 50px;
     margin-bottom: 10px;
-    height: 90%;
+    height: 100%;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
@@ -470,3 +470,46 @@ dt {
   }
 }
 
+.percentage.drawing {
+  &:after {
+    background-color: #fbe371;
+  }
+}
+
+.percentage.rendering {
+  &:after {
+    background-color: #ff655e;
+  }
+}
+
+
+.total-avg {
+  &:after { 
+  content: "";
+  }
+
+  @for $i from 1 through 100 {
+  .percentage-#{$i} {
+    &:after {
+      $value: ($i * 1%);
+      width: $value;
+    }
+  }
+}
+
+
+.class-notes {
+  background-color: $light-gray;
+  padding: 20px 40px;
+  margin-bottom: 50px;
+}
+
+.class-note {
+  margin: 20px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid $dark-gray;
+}
+
+.single-art {
+  margin-bottom: 100px;
+}
