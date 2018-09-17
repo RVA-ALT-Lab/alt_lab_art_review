@@ -464,7 +464,7 @@ function average_ratings($a){
 
 function bar_chart_maker($title, $avg){
   if($avg > 0){
-  $percent = ((round($avg))/4)*100;
+  $percent = round(((round($avg,1))/4)*100);
   $html = '<dl><dt>' . $title . ': ' . $avg . '</dt>';  
   $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd></dl>';
   return $html;
