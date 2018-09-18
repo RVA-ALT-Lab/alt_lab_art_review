@@ -526,3 +526,20 @@ dt {
 .single-art {
   margin-bottom: 100px;
 }
+
+@media (max-width: 575.98px) {
+    .entry-title {
+      text-align: center;
+    }
+    
+   .review-land #gform_wrapper_1 .gform_footer {
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      margin: 0 auto;
+   }
+   #gform_submit_button_1 {
+    height: 80px;
+    width: 100%;
+   }
+}

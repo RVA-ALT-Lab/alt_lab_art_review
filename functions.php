@@ -145,6 +145,7 @@ if ( function_exists('register_sidebar') )
 //gravity forms - increment review count as custom field 
 add_action( 'gform_after_submission_1', 'add_review_count', 10, 2 );
 add_action( 'gform_after_submission_1', 'increment_reviewers', 10, 2 );
+add_action( 'gform_after_submission_1', 'review_next', 10, 3);
 
 function add_review_count($entry, $form){
   $art_id = rgar($entry, '6');
@@ -174,6 +175,36 @@ function increment_reviewers ($entry, $form){
   } else {
     wp_set_post_tags( $art_id, 'reviewer-'. $reviewer_id, true ); 
   }
+}
+
+function review_next($entry, $form){
+  $art_id = rgar($entry, '6');
+  $email = rgar($entry, '7');
+  $reviewer = get_user_by( 'email', $email);
+  $reviewer_id = $reviewer->ID;
+  $current_user_tag = 'reviewer-' . $reviewer_id;
+  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
+  $args = array(
+    'post_type' => 'art',
+    'post_status' => 'publish',
+    'tag__not_in' => array($current_user_tag_id->term_id),
+    'post__not_in' => array($art_id),
+    'posts_per_page' => 1,
+    'order'      => 'DESC',
+    'meta_query' => array(
+      array(
+        'key'     => 'review_count',
+      ),
+    ),
+  );
+
+  $the_query = new WP_Query( $args );
+  if ( $the_query->have_posts() ) :
+    while ( $the_query->have_posts() ) : $the_query->the_post();
+      $url = get_the_permalink();
+    endwhile;
+  endif;
+  header( "Location: $url" );
 }
 
 
@@ -333,7 +364,6 @@ function build_rating_navigation(){
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();
       // Do Stuff
-
      $posts_remain =  $the_query->found_posts;
      $all_posts = karma_progress();
      $posts_complete = $all_posts - $posts_remain;
@@ -352,10 +382,11 @@ function build_rating_navigation(){
         echo '<div class="karma-score">reviews completed</div>';
       }
      
-    endwhile;
+      endwhile;
     endif;
-      echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
-
+    
+    echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
+    //header( "Location: $url" );
     // Reset Post Data
     wp_reset_postdata();
 
