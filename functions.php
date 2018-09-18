@@ -310,7 +310,7 @@ function art_review_custom_sizes( $sizes ) {
     ) );
 }
 
-function buildRatingNavigation(){
+function build_rating_navigation(){
   global $post;
   $current_user = wp_get_current_user();
   $current_user_tag = 'reviewer-'.$current_user->ID;
@@ -337,13 +337,8 @@ function buildRatingNavigation(){
      $posts_remain =  $the_query->found_posts;
      $all_posts = karma_progress();
      $posts_complete = $all_posts - $posts_remain;
-     if ($posts_remain >0){
-        echo '<div class="">achieve karma perfection by reviewing ' . $posts_remain . ' more</div>';
-      } else {
-        echo '<div class="">karma perfection achieved</div>';
-      }
-      echo '<div="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
-      echo '<div class="karma-box">';
+     if ($posts_remain > 0){
+       echo '<div class="karma-score">KARMA: ' . $posts_complete . '/' . $all_posts . '</div><div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
          if ($posts_complete > $i ){
           $complete = 'complete';
@@ -353,11 +348,17 @@ function buildRatingNavigation(){
          echo  '<div class="karma-unit ' . $complete . '">&nbsp;</div>';
         }
       echo '</div>';
+      } else {
+        echo '<div class="karma-score">reviews completed</div>';
+      }
+     
     endwhile;
     endif;
+      echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
 
     // Reset Post Data
     wp_reset_postdata();
+
 }
 
 
@@ -391,7 +392,7 @@ function artist_display(){
     'post_type' => 'art',
     'post_status' => 'publish',
     'posts_per_page' => -1,   
-     'author' => $current_user->ID
+    'author' => $current_user->ID
   );
 
   $the_query = new WP_Query( $args );

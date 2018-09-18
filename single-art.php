@@ -18,6 +18,9 @@ $container   = get_theme_mod( 'understrap_container_type' );
 			<main class="site-main" id="main">
 
 				<?php while ( have_posts() ) : the_post(); ?>
+					<div class="col-md-12">
+						<?php build_rating_navigation();?>
+				    </div>
 
 					<?php get_template_part( 'loop-templates/content', 'art' ); ?>
 					<?php 
@@ -31,9 +34,8 @@ $container   = get_theme_mod( 'understrap_container_type' );
 							echo '</div></div>';
 						}
 						else {
-
-							buildRatingNavigation(); //NEXT NAV	
-							get_reviews_chart($post->ID); //RETURN RATINGS DATA
+							build_rating_navigation(); //NEXT NAV	
+							//get_reviews_chart($post->ID); //RETURN RATINGS DATA
 						}
 					;?>
 						
