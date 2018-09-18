@@ -482,17 +482,23 @@ dt {
   }
 }
 
-
-.total-avg {
+.total-avg.percentage{
+  background: transparent;
+}
+.total-avg.percentage {
   &:after { 
   content: "";
+    border-right: 2px solid black;
+    margin-top: -48px;
+    background-color: transparent;
   }
 
   @for $i from 1 through 100 {
   .percentage-#{$i} {
     &:after {
       $value: ($i * 1%);
-      width: $value;
+      width: $value;    
+     }
     }
   }
 }

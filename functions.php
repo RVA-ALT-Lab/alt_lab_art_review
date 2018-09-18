@@ -449,9 +449,9 @@ function jason_reviews_chart($id) {
       }
            
     }
-    echo bar_chart_maker('design', average_ratings($individual_design));
-    echo bar_chart_maker('drawing', average_ratings($individual_drawing));
-    echo bar_chart_maker('rendering', average_ratings($individual_rendering));
+    echo bar_chart_maker('design', average_ratings($individual_design), average_ratings($all_design));
+    echo bar_chart_maker('drawing', average_ratings($individual_drawing), average_ratings($all_drawing));
+    echo bar_chart_maker('rendering', average_ratings($individual_rendering), average_ratings($all_rendering));
     if ($individual_comments){
       echo '<div class="class-notes"><h2>Notes from the class:</h2>' . $individual_comments . '</div>';
     }
@@ -469,11 +469,12 @@ function average_ratings($a){
 }
 
 
-function bar_chart_maker($title, $avg){
+function bar_chart_maker($title, $avg, $total_avg){
   if($avg > 0){
   $percent = round(((round($avg,1))/4)*100);
+  $total_avg = round(((round($total_avg,1))/4)*100);
   $html = '<dl><dt>' . $title . ': ' . $avg . '</dt>';  
-  $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd><dd class="percentage total-avg percentage-20"></dd></dl>';
+  $html .= '<dd class="percentage percentage-' . $percent . ' ' . $title . '"></dd><dd class="percentage total-avg percentage-' . $total_avg .'"></dd></dl>';
   return $html;
   } else {
   }
