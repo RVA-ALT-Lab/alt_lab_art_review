@@ -197,7 +197,7 @@ function review_next($entry, $form){
       ),
     ),
   );
-
+  $url = get_site_url();
   $the_query = new WP_Query( $args );
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();

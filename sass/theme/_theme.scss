@@ -284,15 +284,15 @@ ul.gfield_radio li label:hover {
 }
 
 #gform_wrapper_1 #field_1_8 .chosen-child {
-    background-color: red !important;
+    background-color: #fbe371 !important;
 }
 
 #gform_wrapper_1 #field_1_9 .chosen-child {
-    background-color: blue !important;
+    background-color: #77d6fa !important;
 }
 
 #gform_wrapper_1 #field_1_10 .chosen-child {
-    background-color: orange !important;
+    background-color: #ff655e !important;
 }
 
 #gform_wrapper_1 .ginput_container_radio {
@@ -528,10 +528,10 @@ dt {
 }
 
 @media (max-width: 575.98px) {
-    .entry-title {
+    .entry-title, .reviews h2 {
       text-align: center;
     }
-    
+
    .review-land #gform_wrapper_1 .gform_footer {
       position: relative;
       bottom: 0;
