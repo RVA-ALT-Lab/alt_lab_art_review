@@ -341,15 +341,19 @@ function art_review_custom_sizes( $sizes ) {
     ) );
 }
 
+
+
 function build_rating_navigation(){
   global $post;
   $current_user = wp_get_current_user();
   $current_user_tag = 'reviewer-'.$current_user->ID;
-  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
+  var_dump($current_user_tag);
+  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag')->term_id;
+  var_dump($current_user_tag_id);
   $args = array(
     'post_type' => 'art',
     'post_status' => 'publish',
-    'tag__not_in' => array($current_user_tag_id->term_id),
+    'tag__not_in' => array($current_user_tag_id),
     'post__not_in' => array($post->ID),
     'posts_per_page' => 1,
     'order'      => 'DESC',
@@ -360,13 +364,13 @@ function build_rating_navigation(){
     ),
   );
 
-  $the_query = new WP_Query( $args );
-  if ( $the_query->have_posts() ) :
-    while ( $the_query->have_posts() ) : $the_query->the_post();
+  $karma_query = new WP_Query( $args );
+  if ( $karma_query->have_posts() ) :
+    while ( $karma_query->have_posts() ) : $karma_query->the_post();
       // Do Stuff
-     $posts_remain =  $the_query->found_posts;
+     $posts_remain =  $karma_query->found_posts;
      $all_posts = karma_progress();
-     $posts_complete = $all_posts - $posts_remain;
+     $posts_complete = ($all_posts - $posts_remain);
      if ($posts_remain > 0){
        echo '<div class="karma-score">KARMA: ' . $posts_complete . '/' . $all_posts . '</div><div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
@@ -378,6 +382,8 @@ function build_rating_navigation(){
          echo  '<div class="karma-unit ' . $complete . '">&nbsp;</div>';
         }
       echo '</div>';
+      echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">Review Art//Earn Karma</a></div>';
+
       } else {
         echo '<div class="karma-score">reviews completed</div>';
       }
@@ -385,7 +391,6 @@ function build_rating_navigation(){
       endwhile;
     endif;
     
-    echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">review</a></div>';
     //header( "Location: $url" );
     // Reset Post Data
     wp_reset_postdata();
@@ -511,3 +516,12 @@ function bar_chart_maker($title, $avg, $total_avg){
   } else {
   }
 }
+
+
+function homepage_karma(){
+  if (is_front_page()){
+  build_rating_navigation();    
+  }
+}
+
+add_filter( 'the_content', 'homepage_karma' );

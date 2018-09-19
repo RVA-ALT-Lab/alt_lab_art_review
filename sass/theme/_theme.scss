@@ -409,6 +409,23 @@ ul.gfield_radio li label:hover {
   background-color: #77d6fa;
 }
 
+.karma-nav {
+  display: block;
+  width: 300px;
+  padding: 10px;
+  font-size: 1.2em;
+  border: 1px solid $dark-gray;
+  margin: 20px auto;
+}
+
+.karma-nav a {
+  height: auto;
+  width: 100%;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
 //rating bar chart
 
 dl {
