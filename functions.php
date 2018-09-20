@@ -371,6 +371,7 @@ function build_rating_navigation(){
      $posts_remain =  $karma_query->found_posts;
      $all_posts = karma_progress();
      $posts_complete = ($all_posts - $posts_remain);
+     var_dump($posts_remain);
      if ($posts_remain > 0){
        echo '<div class="karma-score">KARMA: ' . $posts_complete . '/' . $all_posts . '</div><div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
@@ -391,8 +392,6 @@ function build_rating_navigation(){
       endwhile;
     endif;
     
-    //header( "Location: $url" );
-    // Reset Post Data
     wp_reset_postdata();
 
 }
@@ -525,3 +524,16 @@ function homepage_karma(){
 }
 
 add_filter( 'the_content', 'homepage_karma' );
+
+//set the review_count to 0 so it shows in the query and lets us sort 0 to top
+function save_art_meta( $post_id, $post, $update ) {
+
+    $post_type = get_post_type($post_id);
+
+    if ($post_type == "art" &&  ! get_post_meta( $post_id, 'review_count')){
+      update_post_meta( $post_id, 'review_count', 0 );
+    }
+
+
+}
+add_action( 'save_post', 'save_art_meta', 10, 3 );
