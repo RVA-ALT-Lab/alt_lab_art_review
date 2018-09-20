@@ -386,11 +386,10 @@ function build_rating_navigation(){
       echo '</div>';
       echo '<div class="karma-nav"><a href="' . get_the_permalink() . '">Review Art//Earn Karma</a></div>';
 
-      } else {
-        echo '<div class="karma-score">reviews completed</div>';
-      }
-     
+      } 
       endwhile;
+    else :
+        echo '<div class="karma-score"><h2>Karma Achieved</h2> You have nothing to rate at this time. This may change as additional work is submitted.</div>';
     endif;
     
     wp_reset_postdata();
@@ -400,7 +399,7 @@ function build_rating_navigation(){
 
 function karma_progress(){
   $total = wp_count_posts( 'art' )->publish;
-  return $total;
+  return $total-1;
 }
 
 
