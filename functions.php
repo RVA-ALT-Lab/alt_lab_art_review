@@ -370,7 +370,7 @@ function build_rating_navigation(){
   if ( $karma_query->have_posts() ) :
     while ( $karma_query->have_posts() ) : $karma_query->the_post();
       // Do Stuff
-     $posts_remain =  $karma_query->found_posts;
+     $posts_remain =  ($karma_query->found_posts)+1;//deal w starting at 0
      $all_posts = karma_progress();
      $posts_complete = ($all_posts - $posts_remain);  
      if ($posts_remain > 0){
