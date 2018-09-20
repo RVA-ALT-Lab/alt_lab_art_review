@@ -237,7 +237,6 @@ function get_reviews($id) {
   $total_count     = 0;
 
   $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
-  //var_dump($entries);
   $html = '';
   $html .= '<h2>Reviews</h2>';
       $html .= '<div class="review-table"><div class="row"><div class="col-4 reviewer-label"></div><div class="col-1 stat-label">drawing</div><div class="col-1 stat-label">design</div><div class="col-1 stat-label">rendering</div></div>';
@@ -279,7 +278,6 @@ function get_reviews_chart($id) {
   $total_count     = 0;
 
   $entries = GFAPI::get_entries(1, $search_criteria, $sorting, $paging, $total_count );
-  //var_dump($entries);
   $html = '';
   $html .= '<h2>Reviews</h2>';
       $html .= '<div class="review-table"><div class="row"><div class="col-3 reviewer-label"></div><div class="col-3 stat-label">drawing</div><div class="col-3 stat-label">design</div><div class="col-3 stat-label">rendering</div></div>';
@@ -345,17 +343,21 @@ function art_review_custom_sizes( $sizes ) {
 
 function build_rating_navigation(){
   global $post;
-  $current_user = wp_get_current_user();
-  $current_user_tag = 'reviewer-'.$current_user->ID;
-  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
-  $avoid = $current_user_tag_id->term_id;
+  $current_user = wp_get_current_user()->ID;
+  $current_user_tag = 'reviewer-'.$current_user;
+  if(get_term_by('slug', $current_user_tag, 'post_tag')){
+    $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
+    $avoid = $current_user_tag_id->term_id;
+  } else {
+    $avoid = NULL;
+  }
   $karma_args = array(
+    'author__not_in' => array($current_user), //opt out of posts submitted by user
     'post_type' => 'art', //only art
     'post_status' => 'publish', //only published
     'tag__not_in' => array($avoid), //opt out of posts user has reviewed via tag
     'post__not_in' => array($post->ID), //opt out of the post you are currently on
     'posts_per_page' => 1,
-    'author__not_in' => $current_user->ID, //opt out of posts submitted by user
     'order'      => 'DESC',
     'meta_query' => array(
       array(
@@ -370,7 +372,7 @@ function build_rating_navigation(){
       // Do Stuff
      $posts_remain =  $karma_query->found_posts;
      $all_posts = karma_progress();
-     $posts_complete = ($all_posts - $posts_remain);
+     $posts_complete = ($all_posts - $posts_remain);  
      if ($posts_remain > 0){
        echo '<div class="karma-score">KARMA: ' . $posts_complete . '/' . $all_posts . '</div><div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
@@ -397,24 +399,8 @@ function build_rating_navigation(){
 
 
 function karma_progress(){
-  $args = array(
-    'post_type' => 'art',
-    'post_status' => 'publish',
-    'posts_per_page' => 1,   
-  );
-
-  $all_query = new WP_Query( $args );
-  if ( $all_query->have_posts() ) :
-     while ( $all_query->have_posts() ) : $all_query->the_post();
-      // Do Stuff
-      return $all_query->found_posts;
-   
-     endwhile;
-  endif;
-
-    // Reset Post Data
-    wp_reset_postdata();
-
+  $total = wp_count_posts( 'art' )->publish;
+  return $total;
 }
 
 
@@ -536,3 +522,12 @@ function save_art_meta( $post_id, $post, $update ) {
 
 }
 add_action( 'save_post', 'save_art_meta', 10, 3 );
+
+
+
+function reviewer_tag_on_creation ($post_id, $post, $update){
+  $reviewer_id = get_post_field( 'post_author', $post_id );
+  wp_set_post_tags( $post_id, 'reviewer-'. $reviewer_id, true ); 
+}
+
+add_action( 'save_post', 'reviewer_tag_on_creation', 10, 3 );
