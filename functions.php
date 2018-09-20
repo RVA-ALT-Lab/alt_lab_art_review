@@ -347,31 +347,30 @@ function build_rating_navigation(){
   global $post;
   $current_user = wp_get_current_user();
   $current_user_tag = 'reviewer-'.$current_user->ID;
-  var_dump($current_user_tag);
-  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag')->term_id;
-  var_dump($current_user_tag_id);
-  $args = array(
-    'post_type' => 'art',
-    'post_status' => 'publish',
-    'tag__not_in' => array($current_user_tag_id),
-    'post__not_in' => array($post->ID),
+  $current_user_tag_id = get_term_by('slug', $current_user_tag, 'post_tag');
+  $avoid = $current_user_tag_id->term_id;
+  $karma_args = array(
+    'post_type' => 'art', //only art
+    'post_status' => 'publish', //only published
+    'tag__not_in' => array($avoid), //opt out of posts user has reviewed via tag
+    'post__not_in' => array($post->ID), //opt out of the post you are currently on
     'posts_per_page' => 1,
+    'author__not_in' => $current_user->ID, //opt out of posts submitted by user
     'order'      => 'DESC',
     'meta_query' => array(
       array(
-        'key'     => 'review_count',
+        'key'     => 'review_count', //sort by review count
       ),
     ),
   );
 
-  $karma_query = new WP_Query( $args );
+  $karma_query = new WP_Query( $karma_args );
   if ( $karma_query->have_posts() ) :
     while ( $karma_query->have_posts() ) : $karma_query->the_post();
       // Do Stuff
      $posts_remain =  $karma_query->found_posts;
      $all_posts = karma_progress();
      $posts_complete = ($all_posts - $posts_remain);
-     var_dump($posts_remain);
      if ($posts_remain > 0){
        echo '<div class="karma-score">KARMA: ' . $posts_complete . '/' . $all_posts . '</div><div class="karma-box">';
         for ($i = 0; $i < $all_posts; $i++){
