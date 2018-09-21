@@ -17,8 +17,13 @@
 	<?php echo get_the_post_thumbnail( $post->ID, 'grande' ); ?>
 
 	<div class="entry-content">
-
 		<?php the_content(); ?>
+		<?php 
+		
+			if (current_user_can('editor') || current_user_can('administrator')){
+				total_display();
+			}
+			?>
 		<?php artist_display();?>
 		<?php
 		wp_link_pages( array(

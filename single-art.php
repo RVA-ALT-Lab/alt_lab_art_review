@@ -23,6 +23,7 @@ $container   = get_theme_mod( 'understrap_container_type' );
 				    </div>
 
 					<?php get_template_part( 'loop-templates/content', 'art' ); ?>
+					
 					<?php 
 					//$reviewers = get_post_meta($post->ID, 'reviewer_id', false);
 					$reviewers = wp_get_post_tags($post->ID,array( 'fields' => 'slugs' ));

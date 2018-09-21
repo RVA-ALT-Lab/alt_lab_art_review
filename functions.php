@@ -218,6 +218,30 @@ function add_reviewer ($entry, $form){
 }
 
 
+//set the review_count to 0 so it shows in the query and lets us sort 0 to top
+function save_art_meta( $post_id, $post, $update ) {
+
+    $post_type = get_post_type($post_id);
+
+    if ($post_type == "art" &&  ! get_post_meta( $post_id, 'review_count')){
+      update_post_meta( $post_id, 'review_count', 0 );
+    }
+
+
+}
+add_action( 'save_post', 'save_art_meta', 10, 3 );
+
+
+//tag your own work so it doesn't show
+function reviewer_tag_on_creation ($post_id, $post, $update){
+  $reviewer_id = get_post_field( 'post_author', $post_id );
+  wp_set_post_tags( $post_id, 'reviewer-'. $reviewer_id, true ); 
+}
+
+add_action( 'save_post', 'reviewer_tag_on_creation', 10, 3 );
+
+
+
 
 //OLD WAY TO DO THIS WITH NUMBERS
 function get_reviews($id) {
@@ -389,7 +413,7 @@ function build_rating_navigation(){
       } 
       endwhile;
     else :
-        echo '<div class="karma-score"><h2>Karma Achieved</h2> You have nothing to rate at this time. This may change as additional work is submitted.</div>';
+        echo '<div class="karma-score"><h2>Karma Achieved 👍</h2> You have nothing to rate at this time. This may change as additional work is submitted.</div>';
     endif;
     
     wp_reset_postdata();
@@ -429,6 +453,34 @@ function artist_display(){
     // Reset Post Data
     wp_reset_postdata();
 }
+
+
+function total_display(){
+  global $post;
+  $current_user = wp_get_current_user();
+ 
+  $args = array(
+    'post_type' => 'art',
+    'post_status' => 'publish',
+  );
+
+  $the_query = new WP_Query( $args );
+  if ( $the_query->have_posts() ) :
+    while ( $the_query->have_posts() ) : $the_query->the_post();
+      // Do Stuff
+        echo '<div class="row single-art admin-view"><div class="col-md-12"><h2>' . get_the_author_meta('email', $post->post_author) . '</h2></div><div class="col-md-5">';       
+        the_post_thumbnail( 'thumbnail',['class' => 'img-responsive responsive--full', 'title' => 'Feature image']);
+        echo '</div><div class="col-md-7">';
+         jason_reviews_chart($post->ID);
+         echo '</div></div>';
+      endwhile;
+    endif;
+
+    // Reset Post Data
+    wp_reset_postdata();
+}
+
+
 
 
 function jason_reviews_chart($id) {
@@ -502,31 +554,13 @@ function bar_chart_maker($title, $avg, $total_avg){
 
 
 function homepage_karma(){
-  if (is_front_page()){
+  if (current_user_can('editor') || current_user_can('administrator')){
+    return; //ignore karma nav for admin/editor level people
+  }
+  if (is_front_page() ){
   build_rating_navigation();    
   }
 }
 
 add_filter( 'the_content', 'homepage_karma' );
 
-//set the review_count to 0 so it shows in the query and lets us sort 0 to top
-function save_art_meta( $post_id, $post, $update ) {
-
-    $post_type = get_post_type($post_id);
-
-    if ($post_type == "art" &&  ! get_post_meta( $post_id, 'review_count')){
-      update_post_meta( $post_id, 'review_count', 0 );
-    }
-
-
-}
-add_action( 'save_post', 'save_art_meta', 10, 3 );
-
-
-
-function reviewer_tag_on_creation ($post_id, $post, $update){
-  $reviewer_id = get_post_field( 'post_author', $post_id );
-  wp_set_post_tags( $post_id, 'reviewer-'. $reviewer_id, true ); 
-}
-
-add_action( 'save_post', 'reviewer_tag_on_creation', 10, 3 );

@@ -501,6 +501,31 @@ dt {
   }
 }
 
+//admin view of charts condensing
+.admin-view .percentage {
+  height: 10px;
+}
+.admin-view .total-avg.percentage {
+  margin-top: -18px;
+}
+
+.admin-view dt {
+  font-size: .8em;
+  font-weight: 400;
+}
+
+.admin-view dl {
+  padding-bottom: 0;
+}
+
+.single-art.admin-view {
+  margin-bottom: 10px;
+  border-bottom: 2px solid $light-gray;
+}
+
+.admin-view .class-notes {
+  display: none;
+}
 
 //total percent lines
 .total-avg.percentage{
