@@ -553,12 +553,13 @@ function bar_chart_maker($title, $avg, $total_avg){
 }
 
 
-function homepage_karma(){
-  if (current_user_can('editor') || current_user_can('administrator')){
-    return; //ignore karma nav for admin/editor level people
+function homepage_karma($content){
+  if (current_user_can('editor') || current_user_can('administrator') && is_front_page()){
+    return $content; //ignore karma nav for admin/editor level people
   }
   if (is_front_page() ){
-  build_rating_navigation();    
+  $nav = build_rating_navigation();    
+  return $nav . $content;
   }
 }
 
