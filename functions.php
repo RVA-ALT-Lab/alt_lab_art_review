@@ -560,6 +560,8 @@ function homepage_karma($content){
   if (is_front_page() ){
   $nav = build_rating_navigation();    
   return $nav . $content;
+  } else {
+    return $content;
   }
 }
 
