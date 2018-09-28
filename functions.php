@@ -468,7 +468,7 @@ function total_display(){
   if ( $the_query->have_posts() ) :
     while ( $the_query->have_posts() ) : $the_query->the_post();
       // Do Stuff
-        echo '<div class="row single-art admin-view"><div class="col-md-12"><h2>' . get_the_author_meta('email', $post->post_author) . '</h2></div><div class="col-md-2">';       
+        echo '<div class="row single-art admin-view"><div class="col-md-12 art-author"><h2>' . get_the_author_meta('email', $post->post_author) . '</h2></div><div class="col-md-2">';       
         the_post_thumbnail( 'thumbnail',['class' => 'img-responsive responsive--full', 'title' => 'Feature image']);
         echo '</div><div class="col-md-10">';
          jason_reviews_chart($post->ID);
