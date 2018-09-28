@@ -423,7 +423,7 @@ function build_rating_navigation(){
 
 function karma_progress(){
   $total = wp_count_posts( 'art' )->publish;
-  return $total-1;
+  return $total;
 }
 
 
