@@ -9,9 +9,14 @@
     top: -10px;
 }
 
+.navbar-brand {
+  font-size: 3em;
+  font-weight: 300;
+  text-transform: uppercase;
+}
 
 #navbarNavDropdown {
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 //gets rid of round edges on child menu elements
@@ -31,7 +36,7 @@
 }
 
 #the-menu {
-    background-color: #efefef !important;
+    background-color: $black !important;
 }
 
 li.active {
@@ -544,8 +549,9 @@ dt {
 }
 
 .single-art.admin-view {
-    margin-bottom: 10px;
-    border-bottom: 2px solid $light-gray;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $light-gray;
 }
 
 .admin-view .class-notes {
@@ -628,6 +634,10 @@ dt {
 
 .gfield_required {
     display: none;
+}
+
+.ginput_container_post_image {
+  border: 1px solid red;
 }
 
 @media (max-width: 575.98px) {
